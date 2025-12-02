@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../config/axios';
-import { useModal } from './ModalContext'; // Import ModalProvider
+import { useModal } from '../context/ModalContext'; // Import ModalProvider
 
 const CalculationsSection = () => {
   const [calculationTools, setCalculationTools] = useState([]);

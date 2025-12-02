@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AuthProvider } from './components/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import Layout from './components/Layout';
 import CalculationsSection from './components/CalculationsSection';
 import ConversionsSection from './components/ConversionsSection';

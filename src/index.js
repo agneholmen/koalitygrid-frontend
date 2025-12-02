@@ -4,8 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { ModalProvider } from './components/ModalContext'; // Import the provider
-import { AuthProvider } from './components/AuthContext';
+import { ModalProvider } from './context/ModalContext'; // Import the provider
+import { AuthProvider } from './context/AuthContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

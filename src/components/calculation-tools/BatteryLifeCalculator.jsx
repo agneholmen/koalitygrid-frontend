@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
 import SingelImage from '../../assets/batteritid_singel.png';
 import SerieImage from '../../assets/batteritid_serie.png';
 import ParallelltImage from '../../assets/batteritid_parallellt.png';
 
-function BatteryLifeCalculator({ onClose }) {
+const BatteryLifeCalculator = () => {
   const [connection, setConnection] = useState('Singel');
   const [numBatteries, setNumBatteries] = useState(1);
   const [voltage, setVoltage] = useState('');
@@ -17,6 +17,7 @@ function BatteryLifeCalculator({ onClose }) {
   const [dod, setDod] = useState(100);
   const [result, setResult] = useState(null);
   const [errors, setErrors] = useState({});
+  const modalContentRef = useRef(null);
 
   const connectionImages = {
     'Singel': SingelImage,
@@ -110,11 +111,16 @@ function BatteryLifeCalculator({ onClose }) {
   };
 
   useKeyboardShortcuts({
+    targetRef: modalContentRef,
     onEnter: calculate,
   });
 
   return (
-    <div className="rounded-lg flex items-center justify-center p-4 bg-[#1c1c1c]">
+    <div 
+      ref={modalContentRef}
+      tabIndex={-1}
+      className="rounded-lg flex items-center justify-center p-4 bg-[#1c1c1c]"
+    >
       <div className="max-w-lg">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div className="flex flex-col">
