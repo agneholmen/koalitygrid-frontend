@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../config/axios';
-import { useModal } from './ModalContext';
+import { useModal } from '../context/ModalContext';
 
 const ConversionsSection = () => {
   const [conversionTools, setConversionTools] = useState([]);

@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Qty from 'js-quantities';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
-function LengthConverter() {
+const LengthConverter = () => {
   const [value, setValue] = useState('');
   const [result, setResult] = useState(null);
   const [unit, setUnit] = useState('km');
+  const modalContentRef = useRef(null);
+  const inputRef = useRef(null);
 
   const units = {
     'km': 'Kilometer',
@@ -25,7 +27,7 @@ function LengthConverter() {
     return true;
   };
 
-  const calculate = async () => {
+  const calculate = async (forcedUnit = unit) => {
     if (!validateInput()) {
       setResult({ error: 'Vänligen fyll i fältet med en giltig siffra.' });
       return;
@@ -33,16 +35,16 @@ function LengthConverter() {
 
     const resultData = [];
     Object.keys(units).forEach((key) => {
-      if (key !== unit) {
+      if (key !== forcedUnit) {
         try {
-          const converted = Qty(`${value} ${unit}`).to(key).scalar;
+          const converted = Qty(`${value} ${forcedUnit}`).to(key).scalar;
           resultData.push({
             unit: key,
             text: units[key],
             result: converted,
           });
         } catch (err) {
-          console.error(`Conversion error from ${unit} to ${key}:`, err);
+          console.error(`Conversion error from ${forcedUnit} to ${key}:`, err);
         }
       }
     });
@@ -50,12 +52,16 @@ function LengthConverter() {
   };
 
   useKeyboardShortcuts({
+    targetRef: modalContentRef,
     onEnter: calculate,
   });
 
-  // Rest of the component remains the same
   return (
-    <div className="rounded-lg flex items-center justify-center p-4 bg-[#1c1c1c]">
+    <div 
+      ref={modalContentRef}
+      tabIndex={-1}
+      className="rounded-lg flex items-center justify-center p-4 bg-[#1c1c1c]"
+    >
       <div className="max-w-lg">
         <div className="grid mb-6">
           <div className="flex flex-col">
@@ -67,15 +73,24 @@ function LengthConverter() {
                 onChange={(e) => setValue(e.target.value)}
                 className={`calc-form-input-split`}
                 min="0"
+                ref={inputRef}
               />
               <select
                 value={unit}
-                onChange={(e) => setUnit(e.target.value)}
+                onChange={(e) => {
+                  const newUnit = e.target.value;
+                  setUnit(newUnit);
+                  if (value && !isNaN(value) && parseFloat(value) > 0) {
+                    calculate(newUnit);
+                  }
+                  inputRef.current?.focus();
+                }}
                 className="calc-form-select-split"
               >
-                {Object.keys(units)
-                  .map((key) => (
-                    <option>{key}</option>
+                {Object.keys(units).map((key) => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
                 ))}
               </select>
             </div>

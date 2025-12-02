@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/koalito.png';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../context/AuthContext';
 import Logout from './Logout';
 
 const Sidebar = () => {

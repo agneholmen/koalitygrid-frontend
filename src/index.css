@@ -8,6 +8,10 @@ body {
   color: #e0e0e0;
 }
 
+button {
+  @apply cursor-pointer;
+}
+
 .calculation-icon-svg {
   width: 35px;
   height: 35px;

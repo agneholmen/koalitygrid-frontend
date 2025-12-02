@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
 const MotorCurrentCalculator = () => {
@@ -10,6 +10,7 @@ const MotorCurrentCalculator = () => {
   const [powerFactor, setPowerFactor] = useState('0.85');
   const [result, setResult] = useState(null);
   const [errors, setErrors] = useState({});
+  const modalContentRef = useRef(null);
 
   const validateInput = (name, value) => {
     if (!value || isNaN(value) || parseFloat(value) < 0) {
@@ -132,11 +133,16 @@ const MotorCurrentCalculator = () => {
   };
 
   useKeyboardShortcuts({
+    targetRef: modalContentRef,
     onEnter: calculate,
   });
 
   return (
-    <div className="flex items-center justify-center p-4 bg-[#1c1c1c]">
+    <div 
+      ref={modalContentRef}
+      tabIndex={-1}
+      className="rounded-lg flex items-center justify-center p-4 bg-[#1c1c1c]"
+    >
       <div className="max-w-lg w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div className="flex flex-col sm:col-span-2">

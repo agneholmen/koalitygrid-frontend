@@ -1,3 +1,4 @@
+import ReactMarkdown from 'react-markdown';
 import { useState, useEffect } from 'react';
 import api from '../config/axios';
 
@@ -153,7 +154,9 @@ const Dictionary = () => {
       {foundTerm &&
         <div className="mt-4 p-4 bg-[#383838] rounded-lg">
           <h2 className="text-3xl font-semibold mb-6 text-white-200">Term: {foundTerm.name}</h2>
-          <p className="text-gray-200">{foundTerm.description}</p>
+          <div className="text-gray-200 prose prose-invert">
+            <ReactMarkdown>{foundTerm.description}</ReactMarkdown>
+          </div>
         </div>
       }
       <div className="mt-4">
