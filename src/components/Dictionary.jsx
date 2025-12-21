@@ -5,8 +5,10 @@ import api from '../config/axios';
 const Dictionary = () => {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [tagQuery, setTagQuery] = useState('');
   const [results, setResults] = useState([]);
   const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const [debouncedTagQuery, setDebouncedTagQuery] = useState(tagQuery);
   const [foundTerm, setFoundTerm] = useState(null);
   const [selectedResult, setSelectedResult] = useState(0);
   const [termsList, setTermsList] = useState([]);
@@ -36,7 +38,7 @@ const Dictionary = () => {
 
   const fetchSearchResults = async () => {
     try {
-      const response = await api.get(`/api/terms/search/?q=${debouncedQuery}`);
+      const response = await api.get(`/api/terms/search/?q=${debouncedQuery}&tag=${debouncedTagQuery}`);
       setResults(response.data);
       setSelectedResult(0);
     } catch (error) {
@@ -56,12 +58,19 @@ const Dictionary = () => {
   }, [query]);
 
   useEffect(() => {
-    if (debouncedQuery) {
+    const timer = setTimeout(() => {
+      setDebouncedTagQuery(tagQuery);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [tagQuery]);
+
+  useEffect(() => {
+    if (debouncedQuery || debouncedTagQuery) {
       fetchSearchResults();
     } else {
       setResults([]);
     }
-  }, [debouncedQuery]);
+  }, [debouncedQuery, debouncedTagQuery]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,7 +94,7 @@ const Dictionary = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (results.length > 0) {
-      openTermDefinition(results[selectedResult].id, results[selectedResult].description);
+      openTermDefinition(results[selectedResult].id);
     } else {
       fetchSearchResults();
     }
@@ -128,14 +137,25 @@ const Dictionary = () => {
   return (
     <div className="justify-center">
       <h2 className="text-3xl font-semibold mb-6 text-white-200">Sök efter termer</h2>
-      <form onSubmit={handleSubmit} onKeyDown={handleResultsNavigation}>
+      <form 
+        onSubmit={handleSubmit}
+        onKeyDown={handleResultsNavigation}
+        class="grid grid-cols-1 sm:grid-cols-2"
+      >
         <input
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoFocus
           placeholder="Sök efter termer..."
-          className="w-full p-2 bg-white border border-gray-300 text-gray-900 focus:ring-[#fa7532] focus:border-[#fa7532] rounded-md"
+          className="w-full p-2 bg-white border border-gray-300 text-gray-900 focus:ring-[#fa7532] focus:border-[#fa7532] rounded-md sm:mr-2"
+        />
+        <input
+          type="text"
+          value={tagQuery}
+          onChange={e => setTagQuery(e.target.value)}
+          placeholder="Sök efter taggar..."
+          className="w-full p-2 bg-white border border-gray-300 text-gray-900 focus:ring-[#fa7532] focus:border-[#fa7532] rounded-md sm:ml-2 mt-2 sm:mt-0"
         />
       </form>
       {results &&
